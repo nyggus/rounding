@@ -14,8 +14,13 @@ from collections import UserList
 from numbers import Number
 from decimal import Decimal
 from fractions import Fraction
+from typing import Any, Callable, Dict, List, Optional, Union, TypeVar
 
-dispatch_table_store = {}
+
+# Type declarations
+IntOrFloat = Union[int, float]
+
+dispatch_table_store: Dict[Any, Any] = {}
 
 
 class NonNumericTypeError(Exception):
@@ -26,13 +31,18 @@ class NonCallableError(Exception):
     pass
 
 
-def types_lookup(type_name):
+def types_lookup(type_name: str) -> Optional[Any]:
     # helper function to get a type.
     # if type_name does not exist (because of the Python version), return None
     return getattr(types, type_name, None)
 
 
-def _do(func, obj, digits, use_copy):
+T = TypeVar("T")
+
+
+def _do(
+    func: Callable, obj: T, digits: List[Optional[int]], use_copy: bool
+) -> Union[Callable, map, filter, List[T], T]:
 
     if type(obj) in (float, int):
         return func(obj, *digits)
@@ -56,7 +66,9 @@ def _do(func, obj, digits, use_copy):
         return map(convert, obj)
 
     def convert_filter(obj):
-        return filter(bool, convert_map(obj))  # bool of map object is always True
+        return filter(
+            bool, convert_map(obj)
+        )  # bool of map object is always True
 
     def convert_generator(obj):
         return map(convert, obj)
@@ -173,7 +185,7 @@ def _do(func, obj, digits, use_copy):
     return convert(obj)
 
 
-def signif(x, digits):
+def signif(x: IntOrFloat, digits: int) -> IntOrFloat:
     """Round number to significant digits.
     Translated from Java algorithm available on
     <a href="http://stackoverflow.com/questions/202302">Stack Overflow</a>
@@ -198,7 +210,9 @@ def signif(x, digits):
     if x == 0:
         return 0
     if not isinstance(x, Number) or isinstance(x, complex):
-        raise NonNumericTypeError(f"x must be a (non-complex) number, not '{type(x).__name__}'")
+        raise NonNumericTypeError(
+            f"x must be a (non-complex) number, not '{type(x).__name__}'"
+        )
     d = math.ceil(math.log10(abs(x)))
     power = digits - d
     magnitude = math.pow(10, power)
@@ -209,7 +223,7 @@ def signif(x, digits):
         return shifted / magnitude
 
 
-def round_object(obj, digits=None, use_copy=False):
+def round_object(obj: Any, digits: int = None, use_copy: bool = False) -> Any:
     """Round numbers in a Python object.
     Args:
         obj (any): any Python object
@@ -233,7 +247,7 @@ def round_object(obj, digits=None, use_copy=False):
     return _do(builtins.round, obj, [digits], use_copy)
 
 
-def ceil_object(obj, use_copy=False):
+def ceil_object(obj: Any, use_copy: bool = False) -> Any:
     """Round numbers in a Python object, using the ceiling algorithm.
     This means rounding to the closest greater integer.
     Args:
@@ -256,7 +270,7 @@ def ceil_object(obj, use_copy=False):
     return _do(math.ceil, obj, [], use_copy)
 
 
-def floor_object(obj, use_copy=False):
+def floor_object(obj: Any, use_copy: bool = False) -> Any:
     """Round numbers in a Python object, using the floor algorithm.
     This means rounding to the closest smaller integer.
     Args:
@@ -280,7 +294,7 @@ def floor_object(obj, use_copy=False):
     return _do(math.floor, obj, [], use_copy)
 
 
-def signif_object(obj, digits=3, use_copy=False):
+def signif_object(obj: Any, digits: int = 3, use_copy: bool = False):
     """Round numbers in a Python object to requested significant digits.
     Args:
         obj (any): any Python object
@@ -312,7 +326,11 @@ def signif_object(obj, digits=3, use_copy=False):
     return _do(signif, obj, [digits], use_copy)
 
 
-def map_object(map_function, obj, use_copy=False):
+def map_object(
+    map_function: Callable[[List[IntOrFloat]], IntOrFloat],
+    obj: Any,
+    use_copy: bool = False,
+):
     """Maps recursively a Python object to a given function.
     Args:
         map_function: function that converts a number and returns a number
