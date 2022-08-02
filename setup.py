@@ -8,12 +8,13 @@ extras_requirements = {
         "wheel",
         "black",
         "pytest",
+        "mypy",
     ],
 }
 
 setuptools.setup(
     name="rounder",
-    version="0.6.1",
+    version="0.6.2",
     author="Ruud van der Ham & Nyggus",
     author_email="nyggus@gmail.com",
     description="A tool for rounding numbers in complex Python objects",
