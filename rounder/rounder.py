@@ -37,12 +37,7 @@ def types_lookup(type_name: str) -> Optional[Any]:
     return getattr(types, type_name, None)
 
 
-T = TypeVar("T")
-
-
-def _do(
-    func: Callable, obj: T, digits: List[Optional[int]], use_copy: bool
-) -> Union[Callable, map, filter, List[T], T]:
+def _do(func, obj, digits, use_copy):
 
     if type(obj) in (float, int):
         return func(obj, *digits)
