@@ -20,7 +20,7 @@ from typing import Any, Callable, Dict, List, Optional, Union, TypeVar
 # Type declarations
 IntOrFloat = Union[int, float]
 
-dispatch_table_store: Dict[Any, Any] = {}
+dispatch_table_store: Dict = {}
 
 
 class NonNumericTypeError(Exception):
@@ -214,9 +214,9 @@ def signif(x: IntOrFloat, digits: int) -> IntOrFloat:
     magnitude = math.pow(10, power)
     shifted = builtins.round(x * magnitude)
     if x >= math.pow(10, digits):
-        return round(shifted / magnitude)
+        return type(x)(round(shifted / magnitude))
     else:
-        return shifted / magnitude
+        return type(x)(shifted / magnitude)
 
 
 def round_object(obj: Any, digits: int = None, use_copy: bool = False) -> Any:
@@ -323,7 +323,7 @@ def signif_object(obj: Any, digits: int = 3, use_copy: bool = False):
 
 
 def map_object(
-    map_function: Callable[[List[IntOrFloat]], IntOrFloat],
+    map_function: Callable[[IntOrFloat], IntOrFloat],
     obj: Any,
     use_copy: bool = False,
 ):

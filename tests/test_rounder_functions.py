@@ -523,10 +523,11 @@ def test_for_UserDict():
 
     assert d != d_rounded_copy
     assert type(d_rounded_copy) == UserDict
-    
+
     d_rounded_no_copy = r.round_object(d, 2, False)
     assert d_rounded_no_copy == d_rounded_copy
     assert d_rounded_no_copy == d
+
 
 def test_for_deque():
     from collections import deque
@@ -927,3 +928,29 @@ def test_no_copy_complex_object_with_map():
         3.0,
     ]
     assert len(list(obj["dict"]["map"])) == 0
+
+
+def test_int_from_signif():
+    assert isinstance(r.signif(12.2, 2), float)
+    assert isinstance(r.signif(1222222, 3), int)
+
+    x = [
+        {"x": 2, "y": 45.556},
+        (
+            175,
+            1222.3,
+        ),
+        2,
+    ]
+    assert isinstance(x[0]["x"], int)
+    assert isinstance(x[2], int)
+
+    x_rounded = r.signif_object(x)
+    assert isinstance(x_rounded[0]["x"], int)
+    assert isinstance(x_rounded[2], int)
+
+
+def test_int_return():
+    assert isinstance(r.round_object(10), int)
+    assert isinstance(r.ceil_object(10.234234), int)
+    assert isinstance(r.floor_object(10.234234), int)
