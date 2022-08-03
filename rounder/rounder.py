@@ -118,7 +118,8 @@ def _do(func, obj, digits, use_copy):
         if isinstance(obj, map):
             return convert_map(obj)
         if hasattr(obj, "__dict__"):
-            # placed at the end as some of the above (derived) types might have a __dict__
+            # placed at the end as some of the above (derived) types
+            # might have a __dict__
             if use_copy:
                 obj_copy = copy.copy(obj)
                 for k, v in obj_copy.__dict__.items():
@@ -342,7 +343,10 @@ def map_object(
     >>> round_object(
     ...     map_object(
     ...         math.sin,
-    ...         {0:0, 90: math.radians(90), 180: math.radians(180), 270: math.radians(270)}),
+    ...         {0:0, 90: math.radians(90),
+    ...          180: math.radians(180),
+    ...          270: math.radians(270)}
+    ...     ),
     ...     3
     ... )
     {0: 0.0, 90: 1.0, 180: 0.0, 270: -1.0}
