@@ -20,11 +20,7 @@ from typing import Any, Callable, Dict, List, Optional, Union, TypeVar
 # Type declarations
 IntOrFloat = Union[int, float]
 
-<<<<<<< HEAD
-dispatch_table_store: Dict[Any, Any] = {}
-=======
 dispatch_table_store: Dict = {}
->>>>>>> Return int from signif
 
 
 class NonNumericTypeError(Exception):
@@ -327,11 +323,7 @@ def signif_object(obj: Any, digits: int = 3, use_copy: bool = False):
 
 
 def map_object(
-<<<<<<< HEAD
-    map_function: Callable[[List[IntOrFloat]], IntOrFloat],
-=======
     map_function: Callable[[IntOrFloat], IntOrFloat],
->>>>>>> Return int from signif
     obj: Any,
     use_copy: bool = False,
 ):
@@ -363,7 +355,6 @@ def map_object(
     >>> obj = {'number': 12.323, 'string': 'whatever', 'list': [122.45, .01]}
     >>> map_object(lambda x: signif(x**.5, 3), obj)
     {'number': 3.51, 'string': 'whatever', 'list': [11.1, 0.1]}
-    
     """
     if not callable(map_function):
         raise NonCallableError
