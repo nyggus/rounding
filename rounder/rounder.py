@@ -363,6 +363,7 @@ def map_object(
     >>> obj = {'number': 12.323, 'string': 'whatever', 'list': [122.45, .01]}
     >>> map_object(lambda x: signif(x**.5, 3), obj)
     {'number': 3.51, 'string': 'whatever', 'list': [11.1, 0.1]}
+    
     """
     if not callable(map_function):
         raise NonCallableError
