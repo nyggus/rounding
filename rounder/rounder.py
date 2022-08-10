@@ -14,7 +14,7 @@ from collections import UserList
 from numbers import Number
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 
 # Type declarations
