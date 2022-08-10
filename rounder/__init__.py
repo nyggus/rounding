@@ -5,6 +5,5 @@ from .rounder import (
     ceil_object,
     signif_object,
     signif,
-    NonNumericTypeError,
-    NonCallableError,
+    map_object_clean
 )

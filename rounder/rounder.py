@@ -14,21 +14,13 @@ from collections import UserList
 from numbers import Number
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any, Callable, Dict, List, Optional, Union, TypeVar
+from typing import Any, Callable, Dict, Optional, Union
 
 
 # Type declarations
 IntOrFloat = Union[int, float]
 
 dispatch_table_store: Dict = {}
-
-
-class NonNumericTypeError(Exception):
-    pass
-
-
-class NonCallableError(Exception):
-    pass
 
 
 def types_lookup(type_name: str) -> Optional[Any]:
@@ -206,8 +198,9 @@ def signif(x: IntOrFloat, digits: int) -> IntOrFloat:
     if x == 0:
         return 0
     if not isinstance(x, Number) or isinstance(x, complex):
-        raise NonNumericTypeError(
-            f"x must be a (non-complex) number, not '{type(x).__name__}'"
+        raise TypeError(
+            "x must be a (non-complex) number, "
+            f"not '{type(x).__name__}'"
         )
     d = math.ceil(math.log10(abs(x)))
     power = digits - d
@@ -357,7 +350,47 @@ def map_object(
     {'number': 3.51, 'string': 'whatever', 'list': [11.1, 0.1]}
     """
     if not callable(map_function):
-        raise NonCallableError
+        raise TypeError(
+            "map_function must be a callable, "
+            f"not {type(map_function).__name__}"
+        )
+    return _do(map_function, obj, [], use_copy)
+
+
+def map_object_clean(
+    map_function: Callable[[IntOrFloat], IntOrFloat],
+    obj: Any,
+    use_copy: bool = False,
+):
+    """Maps recursively a Python object to a given function.
+    Args:
+        map_function: function that converts a number and returns a number
+        obj (any): any Python object
+        use_copy (bool, optional): use a deep copy or work with the original
+            object? Defaults to False, in which case mutable objects (a list
+            or a dict, for instance) will be affect inplace.
+    Returns:
+        any: the object with values mapped with the given map_function
+    >>> map_object(abs, -1)
+    1
+    >>> map_object(abs, [-2, -1, 0, 1, 2])
+    [2, 1, 0, 1, 2]
+    >>> round_object(
+    ...     map_object(
+    ...         math.sin,
+    ...         {0:0, 90: math.radians(90),
+    ...          180: math.radians(180),
+    ...          270: math.radians(270)}
+    ...     ),
+    ...     3
+    ... )
+    {0: 0.0, 90: 1.0, 180: 0.0, 270: -1.0}
+    >>> map_object(abs, "string")
+    'string'
+    >>> obj = {'number': 12.323, 'string': 'whatever', 'list': [122.45, .01]}
+    >>> map_object(lambda x: signif(x**.5, 3), obj)
+    {'number': 3.51, 'string': 'whatever', 'list': [11.1, 0.1]}
+    """
     return _do(map_function, obj, [], use_copy)
 
 
