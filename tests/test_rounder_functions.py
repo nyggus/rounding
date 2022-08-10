@@ -258,13 +258,13 @@ def test_signif_ints():
 
 
 def test_signif_exception():
-    with pytest.raises(r.NonNumericTypeError):
+    with pytest.raises(TypeError, match="x must be a"):
         r.signif("string", 3)
 
-    with pytest.raises(r.NonNumericTypeError):
+    with pytest.raises(TypeError, match="x must be a"):
         r.signif([2.12], 3)
 
-    with pytest.raises(r.NonNumericTypeError):
+    with pytest.raises(TypeError, match="x must be a"):
         r.signif((1,), 3)
 
 
@@ -301,11 +301,11 @@ def test_map_object_basic():
 
 
 def test_map_object_exception():
-    with pytest.raises(r.NonCallableError):
+    with pytest.raises(TypeError, match='map_function'):
         r.map_object(2, 2)
-    with pytest.raises(r.NonCallableError):
+    with pytest.raises(TypeError, match='map_function'):
         r.map_object((lambda x: x)(2), 2)
-    with pytest.raises(r.NonCallableError):
+    with pytest.raises(TypeError, match='map_function'):
         r.map_object([], [2, 2])
 
 
