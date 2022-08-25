@@ -24,8 +24,10 @@ dispatch_table_store: Dict = {}
 
 
 def types_lookup(type_name: str) -> Optional[Any]:
-    # helper function to get a type.
-    # if type_name does not exist (because of the Python version), return None
+    """Get a type from name.
+    
+    If type_name does not exist (because of the Python version), return None.
+    """
     return getattr(types, type_name, None)
 
 
