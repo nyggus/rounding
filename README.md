@@ -32,11 +32,11 @@ You can use `signif` in a simple way:
 
 ```
 
-The package is simple to use, but you have to remember that when you're working with mutable objects, such as dicts or lists, rounding them will affect the original object; no such effect, of course, will occur for immutable types (e.g., tuples and sets). To overcome this effect, simply use `use_copy=True` in the above functions (not in `signif`). If you do so, the function will create a copy of the object and work on (and return) its deepcopy, not the original object.
+The package is simple to use, but you have to remember that when you're working with mutable objects, such as dicts or lists, rounding them will affect the original object; no such effect, of course, will occur for immutable types (e.g., tuples and sets). To overcome this effect, simply use `use_copy=True` in the above functions (not in `signif`). If you do so, the function will create a deep copy of the object, work on it, and return it; the original object will not be affected in any way.
 
-You can use `rounder` functions for rounding floats, but do remember that their behavior is slightly different than that of their `builtin` and `math` counterparts, as they do not throw an exception when a non-number object is used.
+You can use `rounder` functions for rounding floats, but do remember that their behavior is slightly different than that of their `builtin` and `math` counterparts, as the former, unlike the latter, do not throw an exception when a non-number object is used.
 
-You can round a list, a tuple, a set (including a frozenset), a double `array.array`, a dict, and even a class instance:
+You can round, for example, a list, a tuple, a set (including a frozenset), a double `array.array`, and a dict:
 
 ```python
 >>> r.round_object([1.122, 2.4434], 1)
@@ -102,7 +102,7 @@ You can of course round a particular attribute of the class instance:
 
 ```
 
-Note that you do not have to worry about having non-roundable objects in the object fed into the `rounder` functions. Your objects can contain objects of any type; numbers will be rounded while all other objects will be remain untouched:
+Note that you do not have to worry about having non-roundable objects in the object fed into the `rounder` functions. Your objects can contain objects of any type; numbers will be rounded while all other objects will remain untouched:
 
 ```python
 >>> r.round_object([1.122, "string", 2.4434, 2.45454545-2j], 1)
@@ -141,7 +141,7 @@ But most of all, you can apply rounding for any complex object, of any structure
 
 ```
 
-To round all the values in this structure, you would need to build a dedicated script for that. With `rounder`, this is a piece of cake:
+To round all the values in this structure, you would need to build a dedicated function. With `rounder`, this is a piece of cake:
 
 ```python
 >>> rounded_x = r.round_object(x, digits=2, use_copy=True)
@@ -260,7 +260,7 @@ The power of `rounder`, however, comes with working with many other types, and i
 
 > Note that `rounder` will work with any type that follows the `collections.abc.Mapping` interface.
 
-> `collections.Counter`: Beware that using `rounder` for this type will affect the _values_ of the counter, which originally represent counts. In most cases, that would mean no effect on such counts (for `rounder.round_object()`, `rounder.ceil_object()` and `rounder.floor_object()`), but `rounder.signif_object()` and `rounder.map_object()` can change the counts. In rare situations, you can keep float values as values in the counter, then `rounder` will work as expected.
+> `collections.Counter`: Beware that using `rounder` for this type will affect the _values_ of the counter, which originally represent counts. In most cases, that would mean no effect on such counts (for `rounder.round_object()`, `rounder.ceil_object()` and `rounder.floor_object()`), but `rounder.signif_object()` and `rounder.map_object()` can change the counts. In rare situations, you can keep float values as values in the counter; in such situations, `rounder` will work as expected.
 
 > If `rounder` meets a type that is not recognized as any of the given above, it will simply return it untouched.
 
@@ -313,7 +313,7 @@ then it will simply return the object untouched.
 
 # Testing
 
-The package is covered with unit `pytest`s, located in the [tests/ folder](tests/). In addition, the package uses `doctest`s, which are collected here, in this README, and in the main module, [rounder.py](rounder/rounder.py). These `doctest`s serve mainly documentation purposes, and since they can be run any time during development and before each release, they help to check whether all the examples are correct and work fine.
+The package is covered with unit `pytest`s, located in the [tests/ folder](tests/). In addition, the package uses `doctest`s, which are collected in this README and in the main module, [rounder.py](rounder/rounder.py). These `doctest`s serve mainly documentation purposes, and since they can be run any time during development and before each release, they help to check whether all the examples are correct and work fine.
 
 
 # OS
