@@ -14,7 +14,7 @@ extras_requirements = {
 
 setuptools.setup(
     name="rounder",
-    version="0.6.3",
+    version="0.6.4",
     author="Ruud van der Ham & Nyggus",
     author_email="nyggus@gmail.com",
     description="A tool for rounding numbers in complex Python objects",
