@@ -1,4 +1,7 @@
 import pytest
+import fractions
+import decimal
+
 from copy import deepcopy
 
 
@@ -36,5 +39,16 @@ def complex_object():
             "eb": {1.333, 2.999},
             "ec": dict(eca=1.565656, ecb=1.765765765),
         },
+    }
+    return deepcopy(obj)
+
+@pytest.fixture()
+def object_with_various_numbers():
+    obj = {
+        "complex number": 1.2-2j,
+        "string": "something nice, ha?",
+        "callable": lambda x: x ** 2,
+        "decimal": decimal.Decimal("1.2"),
+        "fraction": fractions.Fraction(1, 4),
     }
     return deepcopy(obj)

@@ -318,7 +318,7 @@ def signif_object(obj: Any, digits: int = 3, use_copy: bool = False):
 
 
 def map_object(
-    map_function: Callable[[IntOrFloat], IntOrFloat],
+    map_function: Callable[[Number], Number],
     obj: Any,
     use_copy: bool = False,
 ):

@@ -1,7 +1,11 @@
 import asyncio
+import decimal
+import fractions
 import pytest
-import rounder as r
 import random
+import rounder as r
+
+from numbers import Number
 from copy import deepcopy
 from math import ceil, floor
 
@@ -229,10 +233,10 @@ def test_signif_object_for_complex_object_5_digits(complex_object):
 
 
 def test_for_complex_numbers():
-    assert r.round_object(1.934643 - 2j, 2) == 1.93 - 2j
-    assert r.ceil_object(1.934643 - 2j) == 2 - 2j
-    assert r.floor_object(1.934643 - 2j) == 1 - 2j
-    assert r.signif_object(1.934643 - 2j, 5) == 1.9346 - 2j
+    assert r.round_object(1.934643-2j, 2) == 1.93-2j
+    assert r.ceil_object(1.934643-2j) == 2-2j
+    assert r.floor_object(1.934643-2j) == 1-2j
+    assert r.signif_object(1.934643-2j, 5) == 1.9346-2j
 
 
 def test_signif_floats():
@@ -336,6 +340,16 @@ def test_map_object_squared(complex_object):
         "ec": {"eca": 2.451, "ecb": 3.118},
     }
     assert squared_complex_object["d"] == [1.262, 0.001]
+
+
+def test_map_Number(object_with_various_numbers):
+    def square(x: Number) -> Number:
+        return x ** 2
+    
+    squared_object = r.map_object(square, object_with_various_numbers)
+    assert squared_object["complex number"] == (1.44+4j)
+    assert squared_object["decimal"] == decimal.Decimal("1.44")
+    assert squared_object["fraction"] == fractions.Fraction(1, 16)    
 
 
 def test_with_class_instance():
@@ -448,7 +462,7 @@ def test_for_OrderedDict():
         a=1.1212,
         b=55.559,
         c={"item1": "string", "item2": 3434.3434},
-        d=OrderedDict(d1=3434.3434, d2=[99.99, 1.2323 - 2j]),
+        d=OrderedDict(d1=3434.3434, d2=[99.99, 1.2323-2j]),
     )
 
     d_rounded_copy = r.round_object(d, 2, True)
@@ -459,7 +473,7 @@ def test_for_OrderedDict():
             ("c", {"item1": "string", "item2": 3434.34}),
             (
                 "d",
-                OrderedDict([("d1", 3434.34), ("d2", [99.99, (1.23 - 2j)])]),
+                OrderedDict([("d1", 3434.34), ("d2", [99.99, (1.23-2j)])]),
             ),
         ]
     )
@@ -507,7 +521,7 @@ def test_for_UserDict():
             a=1.1212,
             b=55.559,
             c={"item1": "string", "item2": 3434.3434},
-            d=UserDict(dict(d1=3434.3434, d2=[99.996, 1.2323 - 2j])),
+            d=UserDict(dict(d1=3434.3434, d2=[99.996, 1.2323-2j])),
         )
     )
 
@@ -517,7 +531,7 @@ def test_for_UserDict():
             a=1.12,
             b=55.56,
             c={"item1": "string", "item2": 3434.34},
-            d=UserDict(dict(d1=3434.34, d2=[100.0, 1.23 - 2j])),
+            d=UserDict(dict(d1=3434.34, d2=[100.0, 1.23-2j])),
         )
     )
 
