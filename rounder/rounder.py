@@ -214,7 +214,7 @@ def signif(x: IntOrFloat, digits: int) -> IntOrFloat:
         return type(x)(shifted / magnitude)
 
 
-def round_object(obj: Any, digits: Optional[int] = None, use_copy: bool = False) -> Any:
+def round_object(obj: Any, digits: int = 0, use_copy: bool = False) -> Any:
     """Round numbers in a Python object.
     Args:
         obj (any): any Python object
