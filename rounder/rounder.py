@@ -17,9 +17,6 @@ from fractions import Fraction
 from typing import Any, Callable, Dict, Optional, Union
 
 
-# Type declarations
-IntOrFloat = Union[int, float]
-
 dispatch_table_store: Dict = {}
 
 
@@ -175,7 +172,7 @@ def _do(func, obj, digits, use_copy):
     return convert(obj)
 
 
-def signif(x: IntOrFloat, digits: int) -> IntOrFloat:
+def signif(x: float, digits: int) -> float:
     """Round number to significant digits.
     Translated from Java algorithm available on
     <a href="http://stackoverflow.com/questions/202302">Stack Overflow</a>
@@ -360,7 +357,7 @@ def map_object(
 
 
 def map_object_clean(
-    map_function: Callable[[IntOrFloat], IntOrFloat],
+    map_function: Callable[[float], float],
     obj: Any,
     use_copy: bool = False,
 ):
