@@ -9,12 +9,13 @@ extras_requirements = {
         "black",
         "pytest",
         "mypy",
+        "setuptools",
     ],
 }
 
 setuptools.setup(
     name="rounder",
-    version="0.6.6",
+    version="0.6.7",
     author="Ruud van der Ham & Nyggus",
     author_email="nyggus@gmail.com",
     description="A tool for rounding numbers in complex Python objects",
