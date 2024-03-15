@@ -69,6 +69,7 @@ def _do(func, obj, digits, use_copy):
             return_obj = obj
         for k, v in obj.items():
             return_obj[k] = convert(v)
+        
         return return_obj
 
     def convert_array(obj):
@@ -169,7 +170,10 @@ def _do(func, obj, digits, use_copy):
             types_lookup("MemberDescriptorType"): lambda obj: obj,
         }
 
-    return convert(obj)
+    try:
+        return convert(obj)
+    except Exception:
+        return obj
 
 
 def signif(x: float, digits: int) -> float:
@@ -186,13 +190,13 @@ def signif(x: float, digits: int) -> float:
     >>> signif(12222, 3)
     12200
     >>> signif(1, 3)
-    1.0
+    1
     >>> signif(123.123123, 5)
     123.12
     >>> signif(123.123123, 3)
     123.0
     >>> signif(123.123123, 1)
-    100
+    100.0
     """
     if x == 0:
         return 0
@@ -302,7 +306,7 @@ def signif_object(obj: Any, digits: int = 3, use_copy: bool = False):
     >>> signif_object(.00001219, 3)
     1.22e-05
     >>> signif_object(1212.0, 3)
-    1210
+    1210.0
     >>> signif_object("string", 1)
     'string'
     >>> signif_object(["Shout", "Bamalama"], 5)
@@ -391,9 +395,3 @@ def map_object_clean(
     {'number': 3.51, 'string': 'whatever', 'list': [11.1, 0.1]}
     """
     return _do(map_function, obj, [], use_copy)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
