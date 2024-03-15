@@ -28,7 +28,7 @@ You can use `signif` in a simple way:
 >>> r.signif(12.1239112, 5)
 12.124
 >>> r.signif(121212.12, 3)
-121000
+121000.0
 
 ```
 
@@ -117,8 +117,11 @@ In fact, you can round any object, and the function will simply return it if it 
 'string'
 >>> r.round_object(lambda x: x**3)(2)
 8
->>> r.round_object(range(10))
-range(0, 10)
+>>> class Example: ...
+>>> r.round_object(Example)
+<class '__main__.Example'>
+>>> r.round_object(Example())
+<__main__.Example object at 0x...>
 
 ```
 
@@ -274,13 +277,13 @@ The power of `rounder`, however, comes with working with many other types, and i
 ```python
 >>> x = {1.12, 4.555}
 >>> r.round_object(x)
-{1, 5}
+{1.0, 5.0}
 >>> r.round_object(frozenset(x))
-frozenset({1, 5})
+frozenset({1.0, 5.0})
 >>> r.round_object((1.12, 4.555))
-(1, 5)
+(1.0, 5.0)
 >>> r.round_object(({1.1, 1.2}, frozenset({1.444, 2.222})))
-({1}, frozenset({1, 2}))
+({1.0}, frozenset({1.0, 2.0}))
 
 ```
 
