@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rounder"
-version = "0.7.0"
+version = "0.7.1"
 authors = [
         { name = "Nyggus", email = "nyggus@gmail.com" },
         { name = "Ruud van der Ham", email = "nyggus@gmail.com" },

@@ -10,123 +10,109 @@ from copy import deepcopy
 from math import ceil, floor
 
 
-def test_randomized_tests_round_ceil_floor_object(n, limits, digits_range):
-    for _ in range(n):
-        x = random.uniform(*limits)
-        for digits in digits_range:
-            assert round(x, digits) == r.round_object(x, digits)
-            assert ceil(x) == r.ceil_object(x)
-            assert floor(x) == r.floor_object(x)
+def test_randomized_tests_round_ceil_floor_object(x, n_of_digits):
+    assert round(x, n_of_digits) == r.round_object(x, n_of_digits)
+    assert ceil(x) == r.ceil_object(x)
+    assert floor(x) == r.floor_object(x)
 
 
-def test_use_copy_with_lists_and_dicts():
-    items = (
-        [222.222, 333.333, 1.000045, "Shout Bamalama!"],
-        {"a": 222.222, "b": 333.333, "c": 1.000045, "d": "Shout Bamalama!"},
-    )
-
-    for x in items:
-        x_rounded_copy = r.round_object(x, 1, True)
-        assert x_rounded_copy != x
-        x_rounded_no_copy = r.round_object(x, 1, False)
-        assert x_rounded_no_copy == x_rounded_copy
-        assert x_rounded_no_copy is not x_rounded_copy
-        assert x_rounded_no_copy is x
+def test_use_copy_lists(obj_list):
+    rounded_copy = r.round_object(obj_list, 1, True)
+    assert rounded_copy != obj_list
+    rounded_no_copy = r.round_object(obj_list, 1, False)
+    assert rounded_no_copy == rounded_copy
+    assert rounded_no_copy is not rounded_copy
+    assert rounded_no_copy is obj_list
 
 
-def test_no_copy_with_lists_and_dicts():
-    items = (
-        [222.222, 333.333, 1.000045, "Shout Bamalama!"],
-        {"a": 222.222, "b": 333.333, "c": 1.000045, "d": "Shout Bamalama!"},
-    )
-
-    for x in items:
-        x_rounded = r.round_object(x, 1)
-        assert x_rounded is x
+def test_use_copy_dicts(obj_dict):
+    rounded_copy = r.round_object(obj_dict, 1, True)
+    assert rounded_copy != obj_dict
+    rounded_no_copy = r.round_object(obj_dict, 1, False)
+    assert rounded_no_copy == rounded_copy
+    assert rounded_no_copy is not rounded_copy
+    assert rounded_no_copy is obj_dict
 
 
-def test_copy_with_tuples_and_sets():
-    items = (
-        (222.222, 333.333, 1.000045, "Shout Bamalama!"),
-        {222.222, 333.333, 1.000045, "Shout Bamalama!"},
-    )
-
-    for x in items:
-        x_rounded = r.round_object(x, 1, True)
-        assert x_rounded is not x
-        assert x_rounded != x
+def test_no_copy_with_lists(obj_list):
+    rounded = r.round_object(obj_list, 1)
+    assert rounded is obj_list
 
 
-def test_no_copy_with_tuples_and_sets():
-    items = (
-        (222.222, 333.333, 1.000045, "Shout Bamalama!"),
-        {222.222, 333.333, 1.000045, "Shout Bamalama!"},
-    )
-
-    for x in items:
-        x_rounded = r.round_object(x, 1, False)
-        assert x_rounded is not x
-        assert x_rounded != x
+def test_no_copy_with_dicts(obj_dict):
+    rounded = r.round_object(obj_dict, 1)
+    assert rounded is obj_dict
 
 
-def test_randomized_tests_using_copy_lists_tuples_sets(
-    n, list_len, limits, digits_range
+def test_copy_with_tuples(obj_tuple):
+    x_rounded = r.round_object(obj_tuple, 1, True)
+    assert x_rounded is not obj_tuple
+    assert x_rounded != obj_tuple
+
+
+def test_copy_with_sets(obj_set):
+    x_rounded = r.round_object(obj_set, 1, True)
+    assert x_rounded is not obj_set
+    assert x_rounded != obj_set
+
+
+def test_no_copy_with_tuples(obj_tuple):
+    x_rounded = r.round_object(obj_tuple, 1, False)
+    assert x_rounded is not obj_tuple
+    assert x_rounded != obj_tuple
+
+
+def test_no_copy_with_sets(obj_set):
+    x_rounded = r.round_object(obj_set, 1, False)
+    assert x_rounded is not obj_set
+    assert x_rounded != obj_set
+
+
+def test_randomized_tests_using_copy_lists(
+    randomize, iter_type, length, limits, n_of_digits
 ):
-    for _ in range(n):
-        for length in list_len:
-            for digits in digits_range:
-                for iter_type in (list, tuple, set):
-                    x = iter_type(
-                        random.uniform(*limits) for i in range(length)
-                    )
-                    x_copy = deepcopy(x)
+    x = iter_type(random.uniform(*limits) for i in range(length))
+    x_copy = deepcopy(x)
 
-                    r_rounded_x = r.round_object(x, digits, use_copy=True)
-                    assert r_rounded_x != x
+    r_rounded_x = r.round_object(x, n_of_digits, use_copy=True)
+    assert r_rounded_x != x
 
-                    rounded_x = iter_type(round(x, digits) for x in x_copy)
-                    assert r_rounded_x is not x
-                    assert rounded_x == r_rounded_x
+    rounded_x = iter_type(round(x, n_of_digits) for x in x_copy)
+    assert r_rounded_x is not x
+    assert rounded_x == r_rounded_x
 
-                    # use_copy was used, so the original list did not change:
-                    # (here, this makes a difference for lists but not for
-                    # sets and tuples)
-                    if iter_type is list:
-                        assert r_rounded_x != x
-                        no_copy_r_rounded_x = r.round_object(
-                            x, digits, use_copy=False
-                        )
-                        assert no_copy_r_rounded_x == r_rounded_x
+    # use_copy was used, so the original list did not change:
+    # (here, this makes a difference for lists but not for
+    # sets and tuples)
+    if iter_type is list:
+        assert r_rounded_x != x
+        no_copy_r_rounded_x = r.round_object(x, n_of_digits, use_copy=False)
+        assert no_copy_r_rounded_x == r_rounded_x
 
-                        # use_copy was NOT used, so the original list DID change:
-                        assert r_rounded_x == x
+        # use_copy was NOT used, so the original list DID change:
+        assert r_rounded_x == x
 
 
-def test_randomized_tests_using_copy_dicts(n, limits, digits_range):
-    for _ in range(n):
-        for digits in digits_range:
-            for iter_type in (list, tuple, set):
-                x = {
-                    letter: random.uniform(*limits) for letter in "abcefghijk"
-                }
-                x_copy = deepcopy(x)
+def test_randomized_tests_using_copy_dicts(
+    randomize, length, limits, n_of_digits
+):
+    x = {str(i): random.uniform(*limits) for i in range(length)}
+    x_copy = deepcopy(x)
 
-                r_rounded_x = r.round_object(x, digits, use_copy=True)
-                assert r_rounded_x != x
+    r_rounded_x = r.round_object(x, n_of_digits, use_copy=True)
+    assert r_rounded_x != x
 
-                rounded_x = {
-                    letter: round(x, digits) for letter, x in x_copy.items()
-                }
-                assert r_rounded_x is not x
-                assert rounded_x == r_rounded_x
+    rounded_x = {letter: round(x, n_of_digits) for letter, x in x_copy.items()}
+    assert r_rounded_x is not x
+    assert rounded_x == r_rounded_x
 
-                # use_copy was used, so the original list did not change:
-                assert r_rounded_x != x
-                no_copy_r_rounded_x = r.round_object(x, digits, use_copy=False)
-                assert no_copy_r_rounded_x == r_rounded_x
+    # use_copy was used, so the original list did not change:
+    assert r_rounded_x != x
+    no_copy_r_rounded_x = r.round_object(x, n_of_digits, use_copy=False)
+    assert no_copy_r_rounded_x == r_rounded_x
 
-                # use_copy was NOT used, so the original list DID change:
-                assert r_rounded_x == x
+    # use_copy was NOT used, so the original list DID change:
+    assert r_rounded_x == x
 
 
 def test_with_non_roundable_items():
@@ -144,10 +130,10 @@ def test_with_non_roundable_items_lists():
 
 
 def test_with_non_roundable_items_tuples():
-    assert r.round_object(("Shout Bamalama!")) == ("Shout Bamalama!")
-    assert r.ceil_object(("Shout Bamalama!")) == ("Shout Bamalama!")
-    assert r.floor_object(("Shout Bamalama!")) == ("Shout Bamalama!")
-    assert r.signif_object(("Shout Bamalama!"), 5) == ("Shout Bamalama!")
+    assert r.round_object(("Shout Bamalama!",)) == ("Shout Bamalama!",)
+    assert r.ceil_object(("Shout Bamalama!",)) == ("Shout Bamalama!",)
+    assert r.floor_object(("Shout Bamalama!",)) == ("Shout Bamalama!",)
+    assert r.signif_object(("Shout Bamalama!",), 5) == ("Shout Bamalama!",)
 
 
 def test_with_non_roundable_items_sets():
@@ -233,10 +219,10 @@ def test_signif_object_for_complex_object_5_digits(complex_object):
 
 
 def test_for_complex_numbers():
-    assert r.round_object(1.934643-2j, 2) == 1.93-2j
-    assert r.ceil_object(1.934643-2j) == 2-2j
-    assert r.floor_object(1.934643-2j) == 1-2j
-    assert r.signif_object(1.934643-2j, 5) == 1.9346-2j
+    assert r.round_object(1.934643 - 2j, 2) == 1.93 - 2j
+    assert r.ceil_object(1.934643 - 2j) == 2 - 2j
+    assert r.floor_object(1.934643 - 2j) == 1 - 2j
+    assert r.signif_object(1.934643 - 2j, 5) == 1.9346 - 2j
 
 
 def test_signif_floats():
@@ -305,11 +291,11 @@ def test_map_object_basic():
 
 
 def test_map_object_exception():
-    with pytest.raises(TypeError, match='map_function'):
+    with pytest.raises(TypeError, match="map_function"):
         r.map_object(2, 2)
-    with pytest.raises(TypeError, match='map_function'):
+    with pytest.raises(TypeError, match="map_function"):
         r.map_object((lambda x: x)(2), 2)
-    with pytest.raises(TypeError, match='map_function'):
+    with pytest.raises(TypeError, match="map_function"):
         r.map_object([], [2, 2])
 
 
@@ -345,11 +331,11 @@ def test_map_object_squared(complex_object):
 def test_map_Number(object_with_various_numbers):
     def square(x: Number) -> Number:
         return x ** 2
-    
+
     squared_object = r.map_object(square, object_with_various_numbers)
-    assert squared_object["complex number"] == (1.44+4j)
+    assert squared_object["complex number"] == (1.44 + 4j)
     assert squared_object["decimal"] == decimal.Decimal("1.44")
-    assert squared_object["fraction"] == fractions.Fraction(1, 16)    
+    assert squared_object["fraction"] == fractions.Fraction(1, 16)
 
 
 def test_with_class_instance():
@@ -382,7 +368,7 @@ def test_with_class_instance():
     assert a.y[3] == {"item1": 457, "item2": 91}
 
 
-def test_for_namedtuples():
+def test_for_namedtuple():
     from collections import namedtuple
 
     X = namedtuple("X", "a b c")
@@ -413,7 +399,7 @@ def test_for_namedtuples():
     )
 
 
-def test_for_NamedTuples():
+def test_for_NamedTuple():
     from typing import NamedTuple
 
     X1 = NamedTuple("X1", [("a", float), ("b", tuple), ("c", dict)])
@@ -462,7 +448,7 @@ def test_for_OrderedDict():
         a=1.1212,
         b=55.559,
         c={"item1": "string", "item2": 3434.3434},
-        d=OrderedDict(d1=3434.3434, d2=[99.99, 1.2323-2j]),
+        d=OrderedDict(d1=3434.3434, d2=[99.99, 1.2323 - 2j]),
     )
 
     d_rounded_copy = r.round_object(d, 2, True)
@@ -473,7 +459,7 @@ def test_for_OrderedDict():
             ("c", {"item1": "string", "item2": 3434.34}),
             (
                 "d",
-                OrderedDict([("d1", 3434.34), ("d2", [99.99, (1.23-2j)])]),
+                OrderedDict([("d1", 3434.34), ("d2", [99.99, (1.23 - 2j)])]),
             ),
         ]
     )
@@ -521,7 +507,7 @@ def test_for_UserDict():
             a=1.1212,
             b=55.559,
             c={"item1": "string", "item2": 3434.3434},
-            d=UserDict(dict(d1=3434.3434, d2=[99.996, 1.2323-2j])),
+            d=UserDict(dict(d1=3434.3434, d2=[99.996, 1.2323 - 2j])),
         )
     )
 
@@ -531,7 +517,7 @@ def test_for_UserDict():
             a=1.12,
             b=55.56,
             c={"item1": "string", "item2": 3434.34},
-            d=UserDict(dict(d1=3434.34, d2=[100.0, 1.23-2j])),
+            d=UserDict(dict(d1=3434.34, d2=[100.0, 1.23 - 2j])),
         )
     )
 
@@ -855,36 +841,16 @@ def test_generator():
 def test_copy_for_map():
     m = map(lambda i: i / 3, range(10))
     m_rounded_copy = r.round_object(m, 1, use_copy=True)
-    assert list(m_rounded_copy) == [
-        0.0,
-        0.3,
-        0.7,
-        1.0,
-        1.3,
-        1.7,
-        2.0,
-        2.3,
-        2.7,
-        3.0,
-    ]
+    expected = [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.3, 2.7, 3.0]
+    assert list(m_rounded_copy) == expected
     assert len(list(m)) == 10
 
 
 def test_no_copy_for_map_without_copy():
     m = map(lambda i: i / 3, range(10))
     m_rounded_no_copy = r.round_object(m, 1, use_copy=False)
-    assert list(m_rounded_no_copy) == [
-        0.0,
-        0.3,
-        0.7,
-        1.0,
-        1.3,
-        1.7,
-        2.0,
-        2.3,
-        2.7,
-        3.0,
-    ]
+    expected = [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.3, 2.7, 3.0]
+    assert list(m_rounded_no_copy) == expected
     assert len(list(m)) == 0
 
 
@@ -901,18 +867,8 @@ def test_copy_complex_object_with_map():
     obj_rounded = r.round_object(obj, 1, use_copy=True)
     # filter test changed !
     assert list(obj_rounded["dict"]["filter"]) == [1, 1.2, 22.2]
-    assert list(obj_rounded["dict"]["map"]) == [
-        0.0,
-        0.3,
-        0.7,
-        1.0,
-        1.3,
-        1.7,
-        2.0,
-        2.3,
-        2.7,
-        3.0,
-    ]
+    expected = [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.3, 2.7, 3.0]
+    assert list(obj_rounded["dict"]["map"]) == expected
     assert len(list(obj["dict"]["map"])) == 10
 
 
@@ -929,18 +885,8 @@ def test_no_copy_complex_object_with_map():
     obj_rounded = r.round_object(obj, 1, use_copy=False)
 
     assert list(obj_rounded["dict"]["filter"]) == [1, 1.2, 22.2]
-    assert list(obj_rounded["dict"]["map"]) == [
-        0.0,
-        0.3,
-        0.7,
-        1.0,
-        1.3,
-        1.7,
-        2.0,
-        2.3,
-        2.7,
-        3.0,
-    ]
+    expected = [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.3, 2.7, 3.0]
+    assert list(obj_rounded["dict"]["map"]) == expected
     assert len(list(obj["dict"]["map"])) == 0
 
 
@@ -948,14 +894,7 @@ def test_int_from_signif():
     assert isinstance(r.signif(12.2, 2), float)
     assert isinstance(r.signif(1222222, 3), int)
 
-    x = [
-        {"x": 2, "y": 45.556},
-        (
-            175,
-            1222.3,
-        ),
-        2,
-    ]
+    x = [{"x": 2, "y": 45.556}, (175, 1222.3), 2]
     assert isinstance(x[0]["x"], int)
     assert isinstance(x[2], int)
 
