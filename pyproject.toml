@@ -7,7 +7,7 @@ name = "rounder"
 version = "0.7.1"
 authors = [
         { name = "Nyggus", email = "nyggus@gmail.com" },
-        { name = "Ruud van der Ham", email = "nyggus@gmail.com" },
+        { name = "Ruud van der Ham"},
 ]
 description = "A tool for rounding numbers in complex Python objects"
 readme = "README.md"
